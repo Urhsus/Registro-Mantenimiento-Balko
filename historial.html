@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Mantenimientos ROV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>Historial de Mantenimientos ROV</h1>
+                    <div>
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">Nuevo Mantenimiento</a>
+                        <a href="{{ url_for('exportar_excel') }}" class="btn btn-success">Exportar a Excel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for mantenimiento in mantenimientos %}
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">ROV: {{ mantenimiento.codigo_rov }}</h5>
+                            <small class="text-muted">{{ mantenimiento.fecha.strftime('%d/%m/%Y %H:%M') }}</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Información del Equipo</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Piloto:</strong> {{ mantenimiento.piloto }}</li>
+                                    <li><strong>Team:</strong> {{ mantenimiento.team }}</li>
+                                    <li><strong>Centro:</strong> {{ mantenimiento.centro }}</li>
+                                    <li><strong>Código Control:</strong> {{ mantenimiento.codigo_control }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Checklist de Mantenimiento</h6>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="bi {{ 'bi-check-circle-fill text-success' if mantenimiento.limpieza_chassis else 'bi-x-circle-fill text-danger' }}"></i>
+                                        Limpieza Chassis ROV
+                                    </li>
+                                    <li>
+                                        <i class="bi {{ 'bi-check-circle-fill text-success' if mantenimiento.revision_tornillos else 'bi-x-circle-fill text-danger' }}"></i>
+                                        Revisión de tornillos
+                                    </li>
+                                    <li>
+                                        <i class="bi {{ 'bi-check-circle-fill text-success' if mantenimiento.limpieza_carrete else 'bi-x-circle-fill text-danger' }}"></i>
+                                        Limpieza de carrete
+                                    </li>
+                                    <li>
+                                        <i class="bi {{ 'bi-check-circle-fill text-success' if mantenimiento.limpieza_tornillos_carrete else 'bi-x-circle-fill text-danger' }}"></i>
+                                        Limpieza tornillos carrete
+                                    </li>
+                                    <li>
+                                        <i class="bi {{ 'bi-check-circle-fill text-success' if mantenimiento.lubricacion_tornillos else 'bi-x-circle-fill text-danger' }}"></i>
+                                        Lubricación de tornillos
+                                    </li>
+                                    <li>
+                                        <i class="bi {{ 'bi-check-circle-fill text-success' if mantenimiento.prueba_tension_cable else 'bi-x-circle-fill text-danger' }}"></i>
+                                        Prueba de tensión cable
+                                    </li>
+                                    <li>
+                                        <i class="bi {{ 'bi-check-circle-fill text-success' if mantenimiento.testeo_conductividad else 'bi-x-circle-fill text-danger' }}"></i>
+                                        Testeo de conductividad
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <h6>Reparación Realizada</h6>
+                            <p>{{ mantenimiento.reparacion }}</p>
+                            
+                            <h6>Repuestos Usados</h6>
+                            <p>{{ mantenimiento.repuesto_usado }}</p>
+                        </div>
+
+                        {% if mantenimiento.imagen_url %}
+                        <div class="mt-3">
+                            <h6>Imagen de Pruebas</h6>
+                            <img src="{{ url_for('static', filename='uploads/' + mantenimiento.imagen_url) }}" 
+                                 class="img-fluid rounded" 
+                                 alt="Imagen de pruebas"
+                                 style="max-height: 300px;">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
